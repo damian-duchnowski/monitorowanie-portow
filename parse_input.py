@@ -21,7 +21,7 @@ def find_uniq_ip_addr():
 
 
 def match_ports_with_ip():
-    """Return list of ip_addr and their corresponding ports."""
+    """Return list of ip_addr and their corresponding ports from input file."""
     entries = []
     for ip in find_uniq_ip_addr():
         tcp_ports = []
