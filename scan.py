@@ -3,7 +3,7 @@ import subprocess
 import sys
 
 
-def get_open_ports(ip_addr, protocol):
+def get_open_ports(ip_addr, protocol='tcp'):
     '''Return list of all open ports for given ip_addr and protocol upon checking if host is up.'''
     if protocol.lower() == 'tcp':
         cmd = 'sudo nmap -oG - -sS -p- ' + ip_addr
