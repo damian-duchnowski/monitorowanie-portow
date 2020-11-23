@@ -1,5 +1,12 @@
+import smtplib
+
 from parse_input import *
 from scan import *
+from settings import *
+
+from datetime import datetime
+from email.mime.text import MIMEText
+from socket import gaierror
 
 
 def get_messages_to_send():
@@ -27,15 +34,47 @@ def get_messages_to_send():
                                     should_be_closed.append(port)
 
                             if len(should_be_closed) is not 0:
-                                messages_to_send.append("Port(s) {} on host {} should be closed but are open.".format(
+                                messages_to_send.append('Port(s) {} on host {} should be closed but seem open.'.format(
                                     should_be_closed, ip_addr))
                             if len(should_be_open) is not 0:
-                                messages_to_send.append("Port(s) {} on host {} should be open but are closed.".format(
+                                messages_to_send.append('Port(s) {} on host {} should be open but seem closed.'.format(
                                     should_be_open, ip_addr))
             else:
-                messages_to_send.append("Host {} is down.".format(ip_addr))
+                messages_to_send.append('Host {} is down.'.format(ip_addr))
         else:
             messages_to_send.append(
-                "Host {} has all ports closed.".format(ip_addr))
+                'Host {} has all ports closed.'.format(ip_addr))
 
     return messages_to_send
+
+
+def send_emails(email_addr_list=get_recipients()):
+    '''Send emails to recipients from get_recipients with messages from get_messages_to_send.'''
+    for email_addr in email_addr_list:
+        port = SMTP_PORT
+        smtp_server = SMTP_SERVER
+        login = SMTP_LOGIN
+        password = SMTP_PASSWORD
+
+        sender = SMTP_SENDER
+        receiver = email_addr
+
+        msg = MIMEText('\n'.join(get_messages_to_send()))
+
+        msg['Subject'] = 'Port monitoring warning at {}'.format(
+            datetime.now().isoformat(timespec='minutes'))
+        msg['From'] = sender
+        msg['To'] = receiver
+
+        try:
+            with smtplib.SMTP(smtp_server, port) as server:
+                server.login(login, password)
+                server.sendmail(sender, receiver, msg.as_string())
+            print('Warning sent to {} at {}'.format(
+                receiver, datetime.now().isoformat(timespec='seconds')))
+        except (gaierror, ConnectionRefusedError):
+            sys.exit('Failed to connect to the server. Bad connection settings?')
+        except smtplib.SMTPServerDisconnected:
+            sys.exit('Failed to connect to the server. Wrong user/password?')
+        except smtplib.SMTPException as e:
+            sys.exit('SMTP error occurred: ' + str(e))
