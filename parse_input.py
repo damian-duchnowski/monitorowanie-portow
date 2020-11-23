@@ -9,7 +9,7 @@ EMAIL_REGEX = r'[\w\.-]+@[\w\.-]+'
 
 def find_uniq_ip_addr():
     '''Return list of all unique ip_addr found in input file.'''
-    with open('wzorcowe_porty', 'r') as f:  # TODO: Zmienić z powrotem na sys.argv[1]
+    with open(sys.argv[1], 'r') as f:
         ip_addr = []
         for line in f:
             ip = line.split(';')[0]
@@ -29,8 +29,7 @@ def match_ports_with_ip():
     for ip in find_uniq_ip_addr():
         tcp_ports = []
         udp_ports = []
-        # TODO: Zmienić z powrotem na sys.argv[1]
-        with open('./wzorcowe_porty', 'r') as f:
+        with open(sys.argv[1], 'r') as f:
             for line in f:
                 if ip == line.split(';')[0]:
                     protocol = line.split(';')[1].lower()
@@ -55,4 +54,4 @@ def match_ports_with_ip():
 def get_recipients():
     '''Return list of email addresses in input file of users to be notified.'''
     with open('wzorcowe_porty', 'r') as f:
-        return re.findall(EMAIL_REGEX, f.read())
+        return sorted(re.findall(EMAIL_REGEX, f.read()))
