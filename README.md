@@ -31,6 +31,8 @@ notified@admin.com
 
 ## Configuration file parameters
 
+**File name:** `settings.py`
+
 - SMTP_PORT
 - SMTP_SERVER
 - SMTP_LOGIN
