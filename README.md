@@ -1,4 +1,6 @@
-# System monitorowania otwartych portów z funkcją porównania z wzorcowym zestawem i systemem powiadamiania (np. w oparciu o ndiff)
+# Script for monitoring open ports with diff and notification functions (based on e.g. ndiff)
+
+Project for Operations Systems Security.
 
 ## Requirements
 
